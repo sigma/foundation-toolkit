@@ -529,7 +529,7 @@ function initGears() {
         store = server.createStore("fondation_offline");
         workerPool = unsafeWindow.google.gears.factory.create('beta.workerpool');
         wpMgr = new WorkerPoolManager();
-        wpMgr.rootUrl = "http://localhost/~yann/workers/";
+        wpMgr.rootUrl = "http://localhost:8080/workers/";
 
         workerPool.onmessage = function(a, b, message) {
             wpMgr.callbacks[message.sender](message);
