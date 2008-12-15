@@ -1,0 +1,19 @@
+application: helloworld
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /workers
+  static_dir: workers/
+  mime_type: application/x-gears-worker
+
+- url: /scripts
+  static_dir: scripts/
+
+- url: /site-manifest.txt
+  static_files: site-manifest.txt
+  upload: site-manifest.txt
+
+- url: /.*
+  script: ftk.py

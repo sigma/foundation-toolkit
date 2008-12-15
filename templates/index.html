@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en" dir="ltr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+      {{ title }}
+    </title>
+
+    <meta name="robots" content="index,follow" />
+    <script type="text/javascript" src="scripts/gears_init.js"></script>
+    <script type="text/javascript">
+      var localServer = google.gears.factory.create('beta.localserver');
+      var store = localServer.createManagedStore('test-store');
+      store.manifestUrl = 'site-manifest.txt';
+      store.checkForUpdate();
+    </script>
+  </head>
+
+  <body>
+    <a href="{{ url }}">{{ url_linktext }}</a>
+
+    {{ text }}
+  </body>
+</html>
