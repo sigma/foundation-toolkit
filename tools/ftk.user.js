@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          FTK
-// @namespace     http://fondationjeu.com/
-// @description   Fondation Toolkit
+// @namespace     http://foundation-toolkit.appspot.com
+// @description   Foundation Toolkit
 // @include       http://fondationjeu.com/*
 // @include       http://www.fondationjeu.com/*
 // ==/UserScript==
