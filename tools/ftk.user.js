@@ -13,9 +13,13 @@ var db;
 var utils = new Utils();
 var wpMgr;
 
+const realWindow = ( typeof(unsafeWindow) == "undefined" ) ? window : unsafeWindow ;
+
 function Constants() {}
 Constants.F2 = "5";
+Constants.SF = "6";
 Constants.Mule = "7";
+Constants.deleteImg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAAK%2FINwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAYUExURZlmZv%2BZM%2F9mAMwzM8wAAP8AAJkAAAAAAJHQzOoAAAAIdFJOU%2F%2F%2F%2F%2F%2F%2F%2F%2F8A3oO9WQAAAJFJREFUeNpiYEcDAAHEwM7AwgDnsbCzAwQQAzsLIysblAuiAQIIKMvCChEB89kBAgisnAUkAuGzAwQQRD9QBMpnBwggqIEsMHPYAQIIrgImAhBACDOgIgABxIBQDyEBAggowMzEAlHNCiIAAoiBnRnuMLAIQAABBeB8MAAIIKAWJD5QCUAAMaD7FiCAMAQAAgwAYLoGdQu5RxIAAAAASUVORK5CYII%3D';
 
 function WorkerPoolManager() {
     this.callbacks = new Array();
@@ -71,7 +75,7 @@ function Utils() {
     };
 
     this.getOption = function(key, def) {
-        var rs = db.execute('select value from Options where name = "team";');
+        var rs = db.execute('select value from Options where name = ?;', [key]);
         while (rs.isValidRow()) {
             def = rs.field(0);
             rs.next();
@@ -123,7 +127,6 @@ function Stats() {
                 if ( thisCell.nodeName.toLowerCase() == "td" && thisLink && thisLink.nodeName.toLowerCase() == "a" ) {
                     thisPlanetName = thisLink.firstChild.nodeValue;
                     for (var k = 0; k < allControlledPlanets.length; k++) {
-                        //GM_log(allControlledPlanets[k]);
                         if (allControlledPlanets[k] == thisPlanetName) {
                             newCell = document.createElement("td");
                             newCell.setAttribute("style", "background-color: red; color: white");
@@ -457,6 +460,233 @@ function Stats() {
     };
 }
 
+function Messages() {
+
+    this.getSignature = function(account) {
+        var def = "";
+        var rs = db.execute('select signature from Signatures where account = ?;', [account]);
+        while (rs.isValidRow()) {
+            def = rs.field(0);
+            rs.next();
+        }
+        rs.close();
+        return def;
+    }
+
+    this.signOverriddenSubmit = function(event) {
+        var target = event ? event.target : this;
+        var accountName = utils.getOption("account");
+        var equipe = utils.getOption("team");
+        var i = 2;
+        if ( equipe == Constants.SF )  //  there is an "anonyme" checkbox at SF level so we shift the index
+            i++;
+        
+        if ( location.href.search("repondre") != -1 ) {     //  answer window
+            if ( target.elements[i+1].value.length > 0 ) {
+                target.elements[i].value = target.elements[i].value + "\n\n\n" + target.elements[i+1].value;
+            }
+            if ( target.elements[i+2].checked == true ) {
+                db.execute("insert or replace into Signatures values (?,?)", [accountName, target.elements[i+1].value]);
+            }
+        } else {    //  normal window
+            if ( target.elements[i+2].value.length > 0 ) {
+                target.elements[i+1].value = target.elements[i+1].value + "\n\n\n" + target.elements[i+2].value;
+            }
+            if ( target.elements[i+3].checked == true ) {
+                db.execute("insert or replace into Signatures values (?,?)", [accountName, target.elements[i+2].value]);
+            }
+        }
+    }
+    
+    this.addSignature = function() {
+        var index,
+        textAreas,
+        msgTextArea,
+        signTextArea,
+        signTextAreaValue,
+        signSaveCheckbox,
+        accountName;
+        
+        accountName = utils.getOption("account");
+        
+        textAreas = document.getElementsByTagName("textarea");
+        if (textAreas.length > 0) {
+            index = 0;
+            while (textAreas[index].name != "mess")
+                index++;
+            msgTextArea = textAreas[index];
+            
+            signTextArea = document.createElement("textarea");
+            signTextArea.setAttribute("name", "sign");
+            signTextArea.setAttribute("cols", "40");
+            signTextArea.setAttribute("rows", "5");
+            signTextAreaValue = this.getSignature(accountName);
+            signTextArea.appendChild(document.createTextNode(signTextAreaValue));
+            
+            signSaveCheckbox = document.createElement("input");
+            signSaveCheckbox.setAttribute("type", "checkbox");
+            signSaveCheckbox.setAttribute("name", "save");
+            signSaveCheckbox.setAttribute("checked", "checked");
+            
+            msgTextArea.removeChild(msgTextArea.firstChild);  //  remove the default string in the textarea ("Corps du message")
+            
+            msgTextArea.parentNode.insertBefore(document.createTextNode("Corps du message :"), msgTextArea);
+            msgTextArea.parentNode.insertBefore(document.createElement("br"), msgTextArea);
+            
+            msgTextArea.parentNode.insertBefore(document.createElement("br"), msgTextArea.parentNode.lastChild);
+            msgTextArea.parentNode.insertBefore(document.createTextNode("Signature :"), msgTextArea.parentNode.lastChild.previousSibling);
+            msgTextArea.parentNode.insertBefore(signTextArea, msgTextArea.parentNode.lastChild);
+            msgTextArea.parentNode.insertBefore(signTextArea, msgTextArea.parentNode.lastChild);
+            msgTextArea.parentNode.insertBefore(document.createElement("br"), msgTextArea.parentNode.lastChild);
+            msgTextArea.parentNode.insertBefore(document.createTextNode("Sauvegarder cette signature"), msgTextArea.parentNode.lastChild);
+            msgTextArea.parentNode.insertBefore(signSaveCheckbox, msgTextArea.parentNode.lastChild);
+            
+            realWindow.addEventListener('submit', this.signOverriddenSubmit, true);
+        }
+    }
+    
+    this.addReplyToAll = function() {
+        var allMsgDiv,
+        thisMsgDiv,
+        thisMsgAuthor,
+        thisMsgLink,
+        newMsgLink,
+        space,
+        center,
+        index;
+        
+        allMsgDiv = document.evaluate(
+            "//td/div",
+            document,
+            null,
+            XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+            null);
+        
+        for (var i = 0; i < allMsgDiv.snapshotLength; i++) {
+            thisMsgDiv = allMsgDiv.snapshotItem(i);
+            
+            index = 0;
+            while (thisMsgDiv.childNodes[index] && thisMsgDiv.childNodes[index].nodeName.toLowerCase() != "a")
+                index++;
+            
+            thisMsgLink = thisMsgDiv.childNodes[index];
+            
+            if ( thisMsgLink && thisMsgLink.nodeName.toLowerCase() == "a" ) {
+                thisMsgLink.parentNode.insertBefore(document.createElement("br"), thisMsgLink);
+                center = thisMsgLink.parentNode.insertBefore(document.createElement("div"), thisMsgLink);
+                center.setAttribute("align", "center");
+                center.appendChild(thisMsgLink);
+                
+                newLink = thisMsgLink.cloneNode(true);
+                thisMsgAuthor = thisMsgDiv.firstChild.firstChild.nodeValue;
+                
+                if ( thisMsgAuthor.match("#Canal v.t.ran#") ) {
+                    newLink.href = newLink.href.substring(0, newLink.href.indexOf("repondre=")+9) + thisMsgAuthor.slice(7,14) + "s"; // accents problems...
+                    newLink.firstChild.replaceChild(document.createTextNode("Répondre a tous"), newLink.firstChild.firstChild);
+                }
+                if ( thisMsgAuthor.match("#Canal Orateur#") ) {
+                    newLink.href = newLink.href.substring(0, newLink.href.indexOf("repondre=")+9) + "orateurs";
+                    newLink.firstChild.replaceChild(document.createTextNode("Répondre a tous"), newLink.firstChild.firstChild);
+                }
+                if ( thisMsgAuthor.match("#Canal confr.rie#") ) {
+                    newLink.href = newLink.href.substring(0, newLink.href.indexOf("repondre=")+9) + "confrérie";
+                    newLink.firstChild.replaceChild(document.createTextNode("Répondre a tous"), newLink.firstChild.firstChild);
+                }
+                if ( thisMsgAuthor.match("#Canal v.t.ran#") || thisMsgAuthor.match("#Canal Orateur#") || thisMsgAuthor.match("#Canal confr.rie#") ) {
+                    space = document.createElement("span");
+                    space.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                    
+                    thisMsgLink.parentNode.appendChild(space);
+                    thisMsgLink.parentNode.appendChild(newLink);
+                }
+            }
+        }
+    }
+    
+    this.addDeleteButtons = function() {
+        var allCheckboxes,
+        thisCheckbox,
+        newDeleteImg,
+        newDeleteLink;
+
+        allCheckboxes = document.evaluate(
+            "//input[@type='checkbox']",
+            document,
+            null,
+            XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+            null);
+        
+        for (var i = 0; i < allCheckboxes.snapshotLength; i++) {
+            thisCheckbox = allCheckboxes.snapshotItem(i);
+            
+            newDeleteLink = document.createElement("a");
+            newDeleteLink.setAttribute("href", "");
+            
+            newDeleteImg = document.createElement("img");
+            newDeleteImg.setAttribute("src", Constants.deleteImg);
+            newDeleteImg.setAttribute("id", "delete_" + (i+1));
+            newDeleteImg.setAttribute("border", "0");
+            newDeleteImg.setAttribute("title", "Supprimer ce message");
+            
+            newDeleteLink.appendChild(newDeleteImg);
+            
+            thisCheckbox.parentNode.style.textAlign = "center";
+            thisCheckbox.parentNode.insertBefore(document.createElement("br"), thisCheckbox.parentNode.firstChild);
+            thisCheckbox.parentNode.insertBefore(document.createElement("br"), thisCheckbox.parentNode.firstChild);
+            thisCheckbox.parentNode.insertBefore(newDeleteLink, thisCheckbox.parentNode.firstChild);
+        }
+        
+        document.addEventListener('click', function(event) {
+                var imgId = event.target.id,
+                    msgNum;
+                
+                if ( imgId.match("delete_") ) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    
+                    if (confirm("Etes-vous sûr de vouloir supprimer ce message ?")) {
+                        for (i = 0; i < realWindow.document.forms[0].elements.length;i++) {
+                            realWindow.document.forms[0].elements[i].checked = false;
+                        }
+                        
+                        msgNum = imgId.substring(imgId.indexOf("delete_")+7);
+                        
+                        realWindow.document.forms[0].elements[msgNum].checked = true;
+                        realWindow.document.forms[0].submit();
+                    }
+                }
+                
+            }, true);
+    }
+    
+}
+
+function Leader() {
+    this.addClickToRadioLabel = function() {
+        var allInputTags = document.evaluate(
+            "//input",
+            document,
+            null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+            null);
+        var thisInputTag;
+        var newLabel;
+
+        for (var i = 0; i < allInputTags.snapshotLength; i++) {
+            thisInputTag = allInputTags.snapshotItem(i);
+
+            if ( thisInputTag.getAttribute("type") == "radio" ) {
+                var value = thisInputTag.getAttribute("value");
+                thisInputTag.setAttribute("id", "action_"+value);
+                newLabel = document.createElement("label");
+                newLabel.setAttribute("for", "action_"+value);
+                newLabel.appendChild(thisInputTag.nextSibling);
+                thisInputTag.parentNode.insertBefore(newLabel, thisInputTag.nextSibling);
+            }
+        }
+    }
+}
+
 function Hacks() {
     this.menu = function() {
         var url = location.href;
@@ -473,6 +703,22 @@ function Hacks() {
         }
     };
 
+    this.messages = function() {
+        var msg = new Messages();
+        if (location.href.search('ecrire=') != -1)
+            msg.addSignature();
+        
+        if (location.href.search('ecrire=') == -1 && location.href.search('envoi=1') == -1) {
+            msg.addDeleteButtons();
+            msg.addReplyToAll();
+        }
+    };
+
+    this.leader = function() {
+        var leader= new Leader();
+        leader.addClickToRadioLabel();
+    }
+
     this.test = function() {
         function testCallback(message) {
             alert('Received message from worker ' + message.sender + ': \n' + message.body);
@@ -486,8 +732,9 @@ function Hacks() {
 function installHacks() {
     var hack = new Hacks();
     var mapping = {'menu.php': 'menu',
-        'stats.php': 'stats',
-        'messages.php': 'test'
+                   'stats.php': 'stats',
+                   'messages.php': 'messages',
+                   'leader.php': 'leader'
         };
 
     for (var page in mapping) {
@@ -510,6 +757,8 @@ function initDB() {
     db.open("fondation_offline");
     db.execute("create table if not exists Options" +
                " (name varchar(255) primary key, value varchar(255))");
+    db.execute("create table if not exists Signatures" +
+               " (account varchar(255) primary key, signature varchar(255))");
     db.execute("create table if not exists Leaders" +
                " (id integer primary key, name varchar(255), position varchar(255), account varchar(15), date varchar(15))");
 

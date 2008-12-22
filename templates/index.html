@@ -10,6 +10,12 @@
 
     <meta name="robots" content="index,follow" />
     <script type="text/javascript" src="scripts/gears_init.js"></script>
+    <script>
+      if (!window.google || !google.gears) {
+      location.href = "http://gears.google.com/?action=install&message=You'll need Gears to access full functionnality for Foundation Toolkit" +
+      "&return=http://localhost:8080";
+}
+    </script>
     <script type="text/javascript">
       var localServer = google.gears.factory.create('beta.localserver');
       var store = localServer.createManagedStore('ftk-store');
