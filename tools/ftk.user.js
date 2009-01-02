@@ -19,7 +19,7 @@ function Constants() {}
 Constants.F2 = "5";
 Constants.SF = "6";
 Constants.Mule = "7";
-Constants.deleteImg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAAK%2FINwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAYUExURZlmZv%2BZM%2F9mAMwzM8wAAP8AAJkAAAAAAJHQzOoAAAAIdFJOU%2F%2F%2F%2F%2F%2F%2F%2F%2F8A3oO9WQAAAJFJREFUeNpiYEcDAAHEwM7AwgDnsbCzAwQQAzsLIysblAuiAQIIKMvCChEB89kBAgisnAUkAuGzAwQQRD9QBMpnBwggqIEsMHPYAQIIrgImAhBACDOgIgABxIBQDyEBAggowMzEAlHNCiIAAoiBnRnuMLAIQAABBeB8MAAIIKAWJD5QCUAAMaD7FiCAMAQAAgwAYLoGdQu5RxIAAAAASUVORK5CYII%3D';
+Constants.deleteImg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAAK%2FINwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAYUExURZlmZv%2BZM%2F9mAMwzM8wAAP8AAJkAAAAAAJHQzOoAAAAIdFJOU%2F%2F%2F%2F%2F%2F%2F%2F%2F8A3oO9WQAAAJFJREFUeNpiYEcDAAHEwM7AwgDnsbCzAwQQAzsLIysblAuiAQIIKMvCChEB89kBAgisnAUkAuGzAwQQRD9QBMpnBwggqIEsMHPYAQIIrgImAhBACDOgIgABxIBQDyEBAggowMzEAlHNCiIAAoiBnRnuMLAIQAABBeB8MAAIIKAWJD5QCUAAMaD7FiCAMAQAAgwAYLoGdQu5RxIAAAAASUVORK5CYII%3D";
 
 function WorkerPoolManager() {
     this.callbacks = new Array();
@@ -29,7 +29,7 @@ function WorkerPoolManager() {
     this.rootUrl = null;
 
     this.addWorker = function(id, callback) {
-        var childWorkerId = workerPool.createWorkerFromUrl(this.rootUrl + id + '.js');
+        var childWorkerId = workerPool.createWorkerFromUrl(this.rootUrl + id + ".js");
         this.callbacks[childWorkerId] = callback;
         this.ids[id] = childWorkerId;
     };
@@ -75,7 +75,7 @@ function Utils() {
     };
 
     this.getOption = function(key, def) {
-        var rs = db.execute('select value from Options where name = ?;', [key]);
+        var rs = db.execute("select value from Options where name = ?;", [key]);
         while (rs.isValidRow()) {
             def = rs.field(0);
             rs.next();
@@ -85,8 +85,68 @@ function Utils() {
     };
 
     this.setOption = function(key, value) {
-        db.execute('replace into Options values (?, ?)', [key, value]);
+        db.execute("replace into Options values (?, ?)", [key, value]);
     };
+
+    this.calcBestOffer = function(goldQty, goldProd, tinQty, tinProd, ironQty, ironProd, foodQty, foodProd, manufQty, manufProd, prodCycle, nextProdCycle, pol) {
+        return "fer-1|etain-1";
+    }
+
+    this.leaderColors = ["white", "green", "yellow", "red", "blue", "violet"];
+
+    this.normalizeLeaderName = function(leader) {
+        var index = leader.lastIndexOf(" (");
+        if (index == -1)
+            return leader;
+        else {
+            leader = leader.slice(0,index) + leader.slice(index + 1);
+            return leader;
+        }
+    };
+
+    this.getLeaderColor = function(leader) {
+        leader = this.normalizeLeaderName(leader);
+        var rs = db.execute("select color from Leaders where name = ? and account = ?;", [leader, this.getOption("account")]);
+        var res = rs.field(0);
+        rs.close();
+        return res;
+    };
+
+    this.getNextLeaderColor = function(color) {
+        for (var i = 0; i < this.leaderColors.length; i++) {
+            if (this.leaderColors[i] == color)
+                return this.leaderColors[((i+1) % this.leaderColors.length)];
+        }
+    };
+
+    this.recordLeaderColor = function(leader,color) {
+        leader = this.normalizeLeaderName(leader);
+        db.execute("update Leaders set color = ? where name = ? and account = ?;", [color, leader, this.getOption("account")]);
+    };
+
+    this.setLeaderColor = function(index,color) {
+        var polTabChildren = document.getElementById("politique").childNodes;
+        var j = 0;
+        var leader;
+        
+        for (var i = 0; i < polTabChildren.length; i++) {
+            if (polTabChildren[i].nodeName == "#text" &&
+                polTabChildren[i].nodeValue.match(" est pr.sent ici !")) {
+                
+                if (j == index) {
+                    leader = polTabChildren[i-1];
+                    break;
+                }
+                else
+                    j++;
+            }
+        }
+        leader.setAttribute("style", "color: " + color);
+        leader.setAttribute('href', 'javascript:details_setLeaderColor(' + index + ',"' + this.getNextLeaderColor(color) + '")');
+        
+        this.recordLeaderColor(leader.firstChild.nodeValue, color);
+    };
+
 }
 
 function Stats() {
@@ -150,7 +210,7 @@ function Stats() {
             controlledPlanetsTab,
             allControlledPlanets = new Array();
 
-        allHeaders = document.getElementsByTagName('th');
+        allHeaders = document.getElementsByTagName("th");
 
         for (var i = 0; i < allHeaders.length; i++) {
             thisHeader = allHeaders[i];
@@ -309,8 +369,8 @@ function Stats() {
                         thisCell = thisRow.childNodes[j];
                         thisLink = thisCell.childNodes[thisCell.childNodes.length-1];   //  planet name link is always the last element of the first cell in the line
                         if ( thisCell.nodeName.toLowerCase() == "td" && thisLink && thisLink.nodeName.toLowerCase() == "a" ) {
-                            thisX = thisLink.href.substr(thisLink.href.indexOf('&x=')+3, 2);
-                            thisY = thisLink.href.substr(thisLink.href.indexOf('&y=')+3, 2);
+                            thisX = thisLink.href.substr(thisLink.href.indexOf("&x=")+3, 2);
+                            thisY = thisLink.href.substr(thisLink.href.indexOf("&y=")+3, 2);
                             tableXY.push(thisX.concat(thisY));
                             tableRow.push(thisRow);
                             table.push(cpt++);  //  mainly a dummy table for the symmetrical sorting function
@@ -336,13 +396,13 @@ function Stats() {
                 x = newTableXY[i].substr(0,2);
                 y = newTableXY[i].substr(2,2);
                 sectorTitleTr = document.createElement("tr");
-                sectorTitleTr.setAttribute('align', 'right');
+                sectorTitleTr.setAttribute("align", "right");
                 sectorTitleTd = document.createElement("td");
-                sectorTitleTd.setAttribute('colspan', '4');
-                sectorTitleTd.setAttribute('bgcolor', '#ffff33');
+                sectorTitleTd.setAttribute("colspan", "4");
+                sectorTitleTd.setAttribute("bgcolor", "#ffff33");
                 sectorTitleCell = document.createElement("font");
-                sectorTitleCell.setAttribute('color', 'black');
-                sectorTitleCell.appendChild(document.createTextNode('Secteur ' + x + '0/' + y + '0'));
+                sectorTitleCell.setAttribute("color", "black");
+                sectorTitleCell.appendChild(document.createTextNode("Secteur " + x + "0/" + y + "0"));
                 sectorTitleTd.appendChild(sectorTitleCell);
                 sectorTitleTr.appendChild(sectorTitleTd);
                 newTBody.appendChild(sectorTitleTr);
@@ -420,7 +480,7 @@ function Stats() {
 
                     leader = cellChildren[j].title;
 
-                    db.execute("insert into Leaders (name, position, account) values (?,?,?)", [leader, planet, utils.getOption("account")]);
+                    db.execute("insert into Leaders (name, position, account, color) values (?,?,?,?)", [leader, planet, utils.getOption("account"), utils.leaderColors[0]]);
                 }
             }
         }
@@ -464,7 +524,7 @@ function Messages() {
 
     this.getSignature = function(account) {
         var def = "";
-        var rs = db.execute('select signature from Signatures where account = ?;', [account]);
+        var rs = db.execute("select signature from Signatures where account = ?;", [account]);
         while (rs.isValidRow()) {
             def = rs.field(0);
             rs.next();
@@ -541,7 +601,7 @@ function Messages() {
             msgTextArea.parentNode.insertBefore(document.createTextNode("Sauvegarder cette signature"), msgTextArea.parentNode.lastChild);
             msgTextArea.parentNode.insertBefore(signSaveCheckbox, msgTextArea.parentNode.lastChild);
             
-            realWindow.addEventListener('submit', this.signOverriddenSubmit, true);
+            realWindow.addEventListener("submit", this.signOverriddenSubmit, true);
         }
     }
     
@@ -636,7 +696,7 @@ function Messages() {
             thisCheckbox.parentNode.insertBefore(newDeleteLink, thisCheckbox.parentNode.firstChild);
         }
         
-        document.addEventListener('click', function(event) {
+        document.addEventListener("click", function(event) {
                 var imgId = event.target.id,
                     msgNum;
                 
@@ -687,6 +747,224 @@ function Leader() {
     }
 }
 
+function Details() {
+
+    this.clickListener = function(event) {
+        var link = event.target,
+            linkId = event.target.id,
+            linkNum,
+            color;
+            
+        color = utils.getLeaderColor(link.firstChild.nodeValue);
+        
+        if ( linkId.match("link_") ) {
+            event.stopPropagation();
+            event.preventDefault();
+            
+            linkNum = linkId.substring(linkId.indexOf("link_")+5);
+            
+            utils.setLeaderColor(linkNum, utils.getNextLeaderColor(color));
+        }
+    };
+
+    this.linkifyLeaders = function() {
+        var polTabChildren = realWindow.document.getElementById("politique").childNodes;
+        var leaders = new Array();
+        for (var i = 0; i < polTabChildren.length; i++) {
+            if (polTabChildren[i].nodeName == "#text" &&
+                polTabChildren[i].nodeValue.match(" est pr.sent ici !")) {
+                
+                leaders.push(polTabChildren[i]);
+            }
+        }
+        
+        for (var i = 0; i < leaders.length; i++) {
+            link = document.createElement("a");
+            
+            var name = leaders[i].nodeValue.slice(0,leaders[i].nodeValue.length - 19);
+            var color = utils.getLeaderColor(name);
+            
+            //link.href = 'javascript:details_setLeaderColor(' + i + ',"' + utils_getNextLeaderColor(color) + '")';
+            link.setAttribute("id", "link_"+i);
+            link.setAttribute("style", "color:" + color + "; font-size: 10px; font-family: verdana");
+            
+            link.appendChild(document.createTextNode(name));
+
+            leaders[i].parentNode.insertBefore(link, leaders[i]);
+            
+            leaders[i].nodeValue = leaders[i].nodeValue.slice(name.length);
+        }        
+
+        document.addEventListener('click', this.clickListener, true);
+    };
+    
+    this.redesignPage = function() {
+        var docHead = document.getElementsByTagName("head")[0];
+        
+        var newStyle = document.createElement("style");
+        var newStyleContent = document.createTextNode("\n.ordre { visibility: visible } \n.troupes { left: 20px } \n.boutons { visibility: hidden } \n#ressources { top: 165px; height: 100px; visibility: visible } \n#politique { top: 470px; visibility: visible } \n#ordre { top: 345px; visibility: visible }\n");
+        newStyle.appendChild(newStyleContent);
+        var divOrdre = document.getElementById("ordre");
+        //if (divOrdre.lastChild && divOrdre.lastChild.nodeValue.search("NB :") != -1) divOrdre.removeChild(divOrdre.lastChild);
+        
+        var divTroupesChildren = divOrdre.parentNode.childNodes[1].childNodes;
+        var nbAstros = 0;
+        for (var i = 0; i < divTroupesChildren.length; i++) {
+            if (divTroupesChildren[i].nodeName == "#text" &&
+                divTroupesChildren[i].nodeValue.match("\.\.\. [\(]")) {
+                nbAstros = divTroupesChildren[i].nodeValue.slice(5, divTroupesChildren[i].nodeValue.indexOf(" astronefs"));
+                break;
+            }
+        }
+        
+        if ( nbAstros == 0 ) {
+            for (var i = 0; i < divTroupesChildren.length; i++) {
+                if (divTroupesChildren[i].nodeName.toLowerCase() == "img" &&
+                    divTroupesChildren[i].src.match("astro") ) {
+                    nbAstros++;
+                }
+            }
+        }
+        
+        var divTroupes = divTroupesChildren[0].parentNode;
+        var nbAstrosString = document.createTextNode(nbAstros + " astronef(s) ");
+        
+        var size = divTroupesChildren.length-1;
+        for (var i = 0; i < size; i++) {
+            divTroupes.removeChild(divTroupes.firstChild);
+        }
+        
+        divTroupes.insertBefore(nbAstrosString, divTroupes.lastChild);
+        divTroupes.insertBefore(document.createElement("br"), divTroupes.lastChild);
+        
+        docHead.appendChild(newStyle);
+    };
+
+    this.findBestOffer = function() {
+        var divResources = document.getElementById("ressources");
+        var divPol = document.getElementById("politique");
+        var accountName = utils.getOption("account");
+        var goldQty,
+        goldProd,
+        tinQty,
+        tinProd,
+        ironQty,
+        ironProd,
+        foodQty,
+        foodProd,
+        manufQty,
+        manufProd,
+        prodCycle,
+        nextProdCycle,
+        pol = 0;
+        
+        if ( divResources ) {
+            var tBody = divResources.firstChild.firstChild;
+
+            goldQty = tBody.childNodes[1].childNodes[1].firstChild.nodeValue;
+            goldProd = (tBody.childNodes[1].childNodes[2].firstChild.nodeValue == "Oui") ? true : false;
+            tinQty = tBody.childNodes[2].childNodes[1].firstChild.nodeValue;
+            tinProd = (tBody.childNodes[2].childNodes[2].firstChild.nodeValue == "Oui") ? true : false;
+            ironQty = tBody.childNodes[3].childNodes[1].firstChild.nodeValue;
+            ironProd = (tBody.childNodes[3].childNodes[2].firstChild.nodeValue == "Oui") ? true : false;
+            foodQty = tBody.childNodes[4].childNodes[1].firstChild.nodeValue;
+            foodProd = (tBody.childNodes[4].childNodes[2].firstChild.nodeValue == "Oui") ? true : false;
+            manufQty = tBody.childNodes[5].childNodes[1].firstChild.nodeValue;
+            manufProd = (tBody.childNodes[5].childNodes[2].firstChild.nodeValue == "Oui") ? true : false;
+
+            prodCycle = tBody.childNodes[1].childNodes[3].childNodes[4].nodeValue;
+            prodCycle = prodCycle.substring(1, prodCycle.indexOf(" heures"));
+            nextProdCycle = tBody.childNodes[1].childNodes[3].lastChild.nodeValue;
+            nextProdCycle = nextProdCycle.substring(0, nextProdCycle.indexOf(" heures"));
+
+            if ( divPol ) {
+                tBody = divPol.firstChild.firstChild;
+
+                for (var i = 0; i < tBody.childNodes.length; i++) {
+                    if ( tBody.childNodes[i].nodeName.toLowerCase() == "tr" ) {
+                        var thisPlayer = tBody.childNodes[i].childNodes[1].firstChild.firstChild.nodeValue;
+                        thisPlayer = thisPlayer.substring(0, thisPlayer.length-1);
+                        if ( thisPlayer == accountName ) {
+                            pol = tBody.childNodes[i].childNodes[3].childNodes[2].firstChild.nodeValue;
+                            pol = pol.substring(0, pol.indexOf(".0%"));
+                            break;
+                        }
+                    }
+                }
+                return utils.calcBestOffer(goldQty, goldProd, tinQty, tinProd, ironQty, ironProd, foodQty, foodProd, manufQty, manufProd, prodCycle, nextProdCycle, pol);
+            }
+        }
+    };
+
+    this.handleAutoTrade = function() {
+        var bestOffer = this.findBestOffer();
+        var selectArray = document.getElementsByTagName("select");
+        var offerSelect = null,
+        askSelect = null;
+        
+        if ( bestOffer ) {
+            var offer = bestOffer.substring(0, bestOffer.indexOf('|'));
+            var ask = bestOffer.substring(bestOffer.indexOf('|')+1);
+            
+            for (var i = 0; i < selectArray.length; i++) {
+                if ( selectArray[i].name == "offre" )
+                    offerSelect = selectArray[i];
+                if ( selectArray[i].name == "demande" )
+                    askSelect = selectArray[i];
+            }
+            
+            if ( offerSelect && askSelect ) {
+                for (var i = 0; i < offerSelect.childNodes.length; i++) {
+                    if ( offerSelect.childNodes[i].value.search(offer) != -1 ) {
+                        offerSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+                for (var i = 0; i < askSelect.childNodes.length; i++) {
+                    if ( askSelect.childNodes[i].value.search(ask) != -1 ) {
+                        askSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            
+            realWindow.document.getElementById("autoTrade").form.submit();
+        }
+    };
+
+    this.addAutoTradeButton = function() {
+        var selectArray = document.getElementsByTagName("select");
+        var offerSelect = null;
+        
+        for (var i = 0; i < selectArray.length; i++) {
+            if ( selectArray[i].name == "offre" ) {
+                offerSelect = selectArray[i];
+                break;
+            }
+        }
+        
+        if ( offerSelect ) {
+            var newTd = document.createElement("td");
+            var newButton = document.createElement("input");
+            newButton.type = "button";
+            newButton.id = "autoTrade";
+            newButton.value = "Comm. Auto.";
+            
+            newTd.appendChild(newButton);
+            offerSelect.parentNode.parentNode.appendChild(newTd);
+            
+            document.addEventListener('click', function(event) {
+                    if ( event.target.id == "autoTrade" ) {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        this.handleAutoTrade();
+                    }
+                }, true);
+        }
+    };
+    
+}
+
 function Hacks() {
     this.menu = function() {
         var url = location.href;
@@ -705,10 +983,10 @@ function Hacks() {
 
     this.messages = function() {
         var msg = new Messages();
-        if (location.href.search('ecrire=') != -1)
+        if (location.href.search("ecrire=") != -1)
             msg.addSignature();
         
-        if (location.href.search('ecrire=') == -1 && location.href.search('envoi=1') == -1) {
+        if (location.href.search("ecrire=") == -1 && location.href.search("envoi=1") == -1) {
             msg.addDeleteButtons();
             msg.addReplyToAll();
         }
@@ -717,24 +995,34 @@ function Hacks() {
     this.leader = function() {
         var leader= new Leader();
         leader.addClickToRadioLabel();
-    }
+    };
+
+    this.detail = function() {
+        if (location.href.search("x=") != -1) {
+            var details = new Details();
+            details.linkifyLeaders();
+            //details.addAutoTradeButton();
+            details.redesignPage();
+        }
+    };
 
     this.test = function() {
         function testCallback(message) {
-            alert('Received message from worker ' + message.sender + ': \n' + message.body);
+            alert("Received message from worker " + message.sender + ": \n" + message.body);
         }
 
-        wpMgr.addWorker('test', testCallback);
-        wpMgr.runWorker('test', ["3..2..", 1, {helloWorld: "plopida!"}]);
+        wpMgr.addWorker("test", testCallback);
+        wpMgr.runWorker("test", ["3..2..", 1, {helloWorld: "plopida!"}]);
     };
 }
 
 function installHacks() {
     var hack = new Hacks();
-    var mapping = {'menu.php': 'menu',
-                   'stats.php': 'stats',
-                   'messages.php': 'messages',
-                   'leader.php': 'leader'
+    var mapping = {"menu.php": "menu",
+                   "stats.php": "stats",
+                   "messages.php": "messages",
+                   "leader.php": "leader",
+                   "detail.php": "detail"
         };
 
     for (var page in mapping) {
@@ -760,7 +1048,7 @@ function initDB() {
     db.execute("create table if not exists Signatures" +
                " (account varchar(255) primary key, signature varchar(255))");
     db.execute("create table if not exists Leaders" +
-               " (id integer primary key, name varchar(255), position varchar(255), account varchar(15), date varchar(15))");
+               " (id integer primary key, name varchar(255), position varchar(255), account varchar(15), date varchar(15), color varchar(10))");
 
 }
 
@@ -776,7 +1064,7 @@ function initGears() {
     } try {
         server = unsafeWindow.google.gears.factory.create("beta.localserver");
         store = server.createStore("fondation_offline");
-        workerPool = unsafeWindow.google.gears.factory.create('beta.workerpool');
+        workerPool = unsafeWindow.google.gears.factory.create("beta.workerpool");
         wpMgr = new WorkerPoolManager();
         wpMgr.rootUrl = "http://localhost:8080/workers/";
 
@@ -798,7 +1086,7 @@ function initGears() {
 
 function addLoadEvent(func) {
     var oldonload = unsafeWindow.onload;
-    if (typeof unsafeWindow.onload != 'function') {
+    if (typeof unsafeWindow.onload != "function") {
         unsafeWindow.onload = func;
     } else {
         unsafeWindow.onload = function() {
