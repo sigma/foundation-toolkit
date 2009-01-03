@@ -13,7 +13,9 @@ var db;
 var utils = new Utils();
 var wpMgr;
 
-const realWindow = ( typeof(unsafeWindow) == "undefined" ) ? window : unsafeWindow ;
+const realWindow = ( typeof(unsafeWindow) == "undefined" ) ? window : unsafeWindow;
+const ftkApp = "http://foundation-toolkit.appspot.com/";
+//const ftkApp = "http://localhost:8080";
 
 function Constants() {}
 Constants.I1 = "1";
@@ -1675,7 +1677,7 @@ function initGears() {
         store = server.createStore("fondation_offline");
         workerPool = unsafeWindow.google.gears.factory.create("beta.workerpool");
         wpMgr = new WorkerPoolManager();
-        wpMgr.rootUrl = "http://localhost:8080/workers/";
+        wpMgr.rootUrl = ftkApp + "/workers/";
 
         workerPool.onmessage = function(a, b, message) {
             wpMgr.callbacks[message.sender](message);
