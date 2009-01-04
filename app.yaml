@@ -17,6 +17,9 @@ handlers:
 - url: /tools
   static_dir: tools/
 
+- url: /html
+  static_dir: html/
+
 - url: /site-manifest.txt
   static_files: site-manifest.txt
   upload: site-manifest.txt

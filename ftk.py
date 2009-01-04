@@ -20,7 +20,8 @@ class MainPage(webapp.RequestHandler):
 
     template_values = {
       'title': "Fondation-hacks",
-      'text': """Index page for fondation-hacks. There is little to see here, only serves as installation point.
+      'text': """
+Index page for fondation-hacks. There is little to see here, only serves as installation point.
 
 <a href="/tools/ftk.user.js">Greasemonkey user script</a>
 """,
