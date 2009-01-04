@@ -1,0 +1,429 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+lang="en" xml:lang="en">
+<head>
+<title>plan</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2009-01-04 13:46:57 CET"/>
+<meta name="author" content="Yann Hodique"/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color:lightblue; font-weight:normal }
+  .target { }
+  .timestamp { color: grey }
+  .timestamp-kwd { color: CadetBlue }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style><style>
+  body {
+   margin: 10px 6% 10px 250px;
+   font-family: Verdana;
+   font-size: 11pt;
+   text-align: left;
+  }
+  
+  h1 {font-size: 14pt;}
+      
+  #table-of-contents {
+      font-size: 75%;
+      position: fixed;
+      display: bloc;
+      left: 10px;
+      top: 10px;
+      width: 220px;
+      line-height: 14pt;
+  }
+      
+  #table-of-contents h2 {
+      display:none;
+  }
+      
+  #table-of-contents ul {
+      list-style: none;
+      margin: 7px 0px 7px 15px ;
+      padding: 0px;
+  }
+      
+  .title {
+      padding-bottom: 7px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #222;
+  }
+    
+  h2 {
+    font-size: 12pt;
+    padding-bottom: 4px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #DDD;
+  }
+    
+  h3 {font-size: 11pt; color: #a34d32;}
+  h4 {font-size: 9pt;}
+ 
+  a {text-decoration: none; color: #537d7b}
+  a:visited {text-decoration: none; color: #224444}
+  a:hover {text-decoration: underline; color: #a34d32}
+  
+  .todo {color: #990000;}
+  .done {color: #006666;}
+  .timestamp-kwd {color: #444;}
+  .tag {color: #A0A0A0; font-size: 85%; font-weight: 500;}
+  
+  table {border: none;}
+  td {border: none; padding: .1em .7em .1em .3em;}
+  th {border: none;}
+  
+  code {
+      font-size: 10pt;
+ }
+  
+  pre {
+      background: #2F4F4F;
+      color: #F5DFB4;
+      font-size: 9pt;
+      padding: 1em;
+  }
+      
+  img {
+      border: 1px;
+      border-style: dashed;
+      border-color: #DFE3E3;
+  }
+ 
+  .share img {
+      opacity: .4;
+      -moz-opacity: .4;
+      filter: alpha(opacity=40);
+  }
+ 
+  .share img:hover {
+      opacity: 1;
+      -moz-opacity: 1;
+      filter: alpha(opacity=100);
+  }
+  </style>
+</head><body>
+<h1 class="title">plan</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Features </a>
+<ul>
+<li><a href="#sec-1.1">1.1 Menu </a>
+<ul>
+<li><a href="#sec-1.1.1">1.1.1 Init basic data for current session </a></li>
+</ul>
+</li>
+<li><a href="#sec-1.2">1.2 Stats </a>
+<ul>
+<li><a href="#sec-1.2.1">1.2.1 Integrate SF controls in the tables for F2 </a></li>
+<li><a href="#sec-1.2.2">1.2.2 Make ships link to the target planet </a></li>
+<li><a href="#sec-1.2.3">1.2.3 Sort planets by sector if needed </a></li>
+<li><a href="#sec-1.2.4">1.2.4 Record other leaders' position </a></li>
+</ul>
+</li>
+<li><a href="#sec-1.3">1.3 Map </a>
+<ul>
+<li><a href="#sec-1.3.1">1.3.1 Handle double-clike on a planet to select destination </a></li>
+<li><a href="#sec-1.3.2">1.3.2 Display other leaders </a></li>
+<li><a href="#sec-1.3.3">1.3.3 Add Top links for analyzing map depending on the mission </a></li>
+<li><a href="#sec-1.3.4">1.3.4 Display sector separators for missions involving multiple ones (except I1/I2) </a></li>
+<li><a href="#sec-1.3.5">1.3.5 Add Top links to display map movements </a></li>
+</ul>
+</li>
+<li><a href="#sec-1.4">1.4 Messages </a>
+<ul>
+<li><a href="#sec-1.4.1">1.4.1 Remember and insert custom signature </a></li>
+<li><a href="#sec-1.4.2">1.4.2 Delete message in one click </a></li>
+</ul>
+</li>
+<li><a href="#sec-1.5">1.5 Detail </a>
+<ul>
+<li><a href="#sec-1.5.1">1.5.1 Attribute custom color for leaders </a></li>
+<li><a href="#sec-1.5.2">1.5.2 Add smart auto-trading capability (not functional yet) </a></li>
+<li><a href="#sec-1.5.3">1.5.3 Disable "tabs" in details (view everything at once) </a></li>
+</ul>
+</li>
+<li><a href="#sec-1.6">1.6 Leader </a>
+<ul>
+<li><a href="#sec-1.6.1">1.6.1 Allow clicking on item area (not just radio button) </a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-2">2 Finished Tasks </a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1">1 Features </h2>
+<div id="text-1">
+
+
+</div>
+
+<div id="outline-container-1.1" class="outline-3">
+<h3 id="sec-1.1">1.1 Menu </h3>
+<div id="text-1.1">
+
+
+</div>
+
+<div id="outline-container-1.1.1" class="outline-4">
+<h4 id="sec-1.1.1">1.1.1 Init basic data for current session </h4>
+<div id="text-1.1.1">
+
+<ul>
+<li id="sec-1.1.1.1">account name <br/>
+</li>
+<li id="sec-1.1.1.2">team (game level) <br/>
+</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-1.2" class="outline-3">
+<h3 id="sec-1.2">1.2 Stats </h3>
+<div id="text-1.2">
+
+
+</div>
+
+<div id="outline-container-1.2.1" class="outline-4">
+<h4 id="sec-1.2.1">1.2.1 Integrate SF controls in the tables for F2 </h4>
+<div id="text-1.2.1">
+
+<ul>
+<li id="sec-1.2.1.1">like MU <br/>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.2.2" class="outline-4">
+<h4 id="sec-1.2.2">1.2.2 Make ships link to the target planet </h4>
+<div id="text-1.2.2">
+
+</div>
+
+</div>
+
+<div id="outline-container-1.2.3" class="outline-4">
+<h4 id="sec-1.2.3">1.2.3 Sort planets by sector if needed </h4>
+<div id="text-1.2.3">
+
+<ul>
+<li id="sec-1.2.3.1">MU already gets this <br/>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.2.4" class="outline-4">
+<h4 id="sec-1.2.4">1.2.4 Record other leaders' position </h4>
+<div id="text-1.2.4">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-1.3" class="outline-3">
+<h3 id="sec-1.3">1.3 Map </h3>
+<div id="text-1.3">
+
+
+</div>
+
+<div id="outline-container-1.3.1" class="outline-4">
+<h4 id="sec-1.3.1">1.3.1 Handle double-clike on a planet to select destination </h4>
+<div id="text-1.3.1">
+
+<ul>
+<li id="sec-1.3.1.1">planet attack/transfer <br/>
+</li>
+<li id="sec-1.3.1.2">leader destination <br/>
+</li>
+<li id="sec-1.3.1.3">cruiser target <br/>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.3.2" class="outline-4">
+<h4 id="sec-1.3.2">1.3.2 Display other leaders </h4>
+<div id="text-1.3.2">
+
+<ul>
+<li id="sec-1.3.2.1">see <a href="#sec-1.2.4">Record other leaders position</a> <br/>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.3.3" class="outline-4">
+<h4 id="sec-1.3.3">1.3.3 Add Top links for analyzing map depending on the mission </h4>
+<div id="text-1.3.3">
+
+<ul>
+<li id="sec-1.3.3.1">display Fast Shuttle positions (I3, SF, MU) <br/>
+</li>
+<li id="sec-1.3.3.2">display Planets with gold (M1, M2) <br/>
+</li>
+<li id="sec-1.3.3.3">dislay Empire planets (E1, E2) <br/>
+</li>
+<li id="sec-1.3.3.4">display highly neutral planets (MU) <br/>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.3.4" class="outline-4">
+<h4 id="sec-1.3.4">1.3.4 Display sector separators for missions involving multiple ones (except I1/I2) </h4>
+<div id="text-1.3.4">
+
+</div>
+
+</div>
+
+<div id="outline-container-1.3.5" class="outline-4">
+<h4 id="sec-1.3.5">1.3.5 Add Top links to display map movements </h4>
+<div id="text-1.3.5">
+
+<ul>
+<li id="sec-1.3.5.1">Ships attacks (not always accurate for ennemy attacks) <br/>
+</li>
+<li id="sec-1.3.5.2">Leader moves <br/>
+</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-1.4" class="outline-3">
+<h3 id="sec-1.4">1.4 Messages </h3>
+<div id="text-1.4">
+
+
+</div>
+
+<div id="outline-container-1.4.1" class="outline-4">
+<h4 id="sec-1.4.1">1.4.1 Remember and insert custom signature </h4>
+<div id="text-1.4.1">
+
+</div>
+
+</div>
+
+<div id="outline-container-1.4.2" class="outline-4">
+<h4 id="sec-1.4.2">1.4.2 Delete message in one click </h4>
+<div id="text-1.4.2">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-1.5" class="outline-3">
+<h3 id="sec-1.5">1.5 Detail </h3>
+<div id="text-1.5">
+
+
+</div>
+
+<div id="outline-container-1.5.1" class="outline-4">
+<h4 id="sec-1.5.1">1.5.1 Attribute custom color for leaders </h4>
+<div id="text-1.5.1">
+
+<ul>
+<li id="sec-1.5.1.1">see <a href="#sec-1.3.2">Display other leaders</a> <br/>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1.5.2" class="outline-4">
+<h4 id="sec-1.5.2">1.5.2 Add smart auto-trading capability (not functional yet) </h4>
+<div id="text-1.5.2">
+
+</div>
+
+</div>
+
+<div id="outline-container-1.5.3" class="outline-4">
+<h4 id="sec-1.5.3">1.5.3 Disable "tabs" in details (view everything at once) </h4>
+<div id="text-1.5.3">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-1.6" class="outline-3">
+<h3 id="sec-1.6">1.6 Leader </h3>
+<div id="text-1.6">
+
+
+</div>
+
+<div id="outline-container-1.6.1" class="outline-4">
+<h4 id="sec-1.6.1">1.6.1 Allow clicking on item area (not just radio button) </h4>
+<div id="text-1.6.1">
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2">2 Finished Tasks </h2>
+<div id="text-2">
+
+
+</div>
+</div>
+<div id="postamble"><p class="author"> Author: Yann Hodique
+<a href="mailto:yann.hodique@gmail.com">&lt;yann.hodique@gmail.com&gt;</a>
+</p>
+<p class="date"> Date: 2009-01-04 13:46:57 CET</p>
+<p>HTML generated by org-mode 6.16 in emacs 23</p>
+</div></body>
+</html>

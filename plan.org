@@ -1,0 +1,151 @@
+#+STARTUP: content
+#+STARTUP: hidestars
+#+STARTUP: odd
+#+TAGS: { Python(p) Javascript(j) } { GreaseMonkey(g) Webapp(w) Site(s) } { URGENT(+) NORMAL(=) ONEDAY(-) }
+#+DRAWERS: HIDDEN CLOCK PROPERTIES visibility
+#+COLUMNS: %100ITEM %TAGS %PRIORITY %TODO
+#+ARCHIVE: %s::* Finished Tasks
+* Features
+*** Menu
+***** Init basic data for current session
+******* account name
+******* team (game level)
+*** Stats
+***** Integrate SF controls in the tables for F2
+******* like MU
+***** Make ships link to the target planet
+***** Sort planets by sector if needed
+******* MU already gets this
+***** Record other leaders' position
+*** Map
+***** Handle double-clike on a planet to select destination
+******* planet attack/transfer
+******* leader destination
+******* cruiser target
+***** Display other leaders
+******* see [[*Record%20other%20leaders%20position][Record other leaders position]]
+***** Add Top links for analyzing map depending on the mission
+******* display Fast Shuttle positions (I3, SF, MU)
+******* display Planets with gold (M1, M2)
+******* dislay Empire planets (E1, E2)
+******* display highly neutral planets (MU)
+***** Display sector separators for missions involving multiple ones (except I1/I2)
+***** Add Top links to display map movements
+******* Ships attacks (not always accurate for ennemy attacks)
+******* Leader moves
+*** Messages
+***** Remember and insert custom signature
+***** Delete message in one click
+*** Detail
+***** Attribute custom color for leaders
+******* see [[*Display%20other%20leaders][Display other leaders]]
+***** Add smart auto-trading capability (not functional yet)
+***** Disable "tabs" in details (view everything at once)
+*** Leader
+***** Allow clicking on item area (not just radio button)
+* Design
+*** Seamless integration
+***** Once installed, there should be minimal need for maintenance
+*** Greasemonkey
+***** Start point of the application
+******* script should contain minimal code, so as to remain as stable as possible
+*** Gears
+***** fondationjeu.com
+******* store data extracted from game pages
+***** foundation-toolkit.appspot.com
+******* store application content evaluated from greasemonkey
+* Finished Tasks
+* COMMENT html style specifications
+
+# Local Variables:
+# org-export-html-style-extra:
+#  "<style>
+#   body {
+#    margin: 10px 6% 10px 250px;
+#    font-family: Verdana;
+#    font-size: 11pt;
+#    text-align: left;
+#   }
+#   
+#   h1 {font-size: 14pt;}
+#       
+#   #table-of-contents {
+#       font-size: 75%;
+#       position: fixed;
+#       display: bloc;
+#       left: 10px;
+#       top: 10px;
+#       width: 220px;
+#       line-height: 14pt;
+#   }
+#       
+#   #table-of-contents h2 {
+#       display:none;
+#   }
+#       
+#   #table-of-contents ul {
+#       list-style: none;
+#       margin: 7px 0px 7px 15px ;
+#       padding: 0px;
+#   }
+#       
+#   .title {
+#       padding-bottom: 7px;
+#       margin-bottom: 20px;
+#       border-bottom: 1px solid #222;
+#   }
+#     
+#   h2 {
+#     font-size: 12pt;
+#     padding-bottom: 4px;
+#     margin-top: 5px;
+#     margin-bottom: 5px;
+#     border-bottom: 1px solid #DDD;
+#   }
+#     
+#   h3 {font-size: 11pt; color: #a34d32;}
+#   h4 {font-size: 9pt;}
+#  
+#   a {text-decoration: none; color: #537d7b}
+#   a:visited {text-decoration: none; color: #224444}
+#   a:hover {text-decoration: underline; color: #a34d32}
+#   
+#   .todo {color: #990000;}
+#   .done {color: #006666;}
+#   .timestamp-kwd {color: #444;}
+#   .tag {color: #A0A0A0; font-size: 85%; font-weight: 500;}
+#   
+#   table {border: none;}
+#   td {border: none; padding: .1em .7em .1em .3em;}
+#   th {border: none;}
+#   
+#   code {
+#       font-size: 10pt;
+#  }
+#   
+#   pre {
+#       background: #2F4F4F;
+#       color: #F5DFB4;
+#       font-size: 9pt;
+#       padding: 1em;
+#   }
+#       
+#   img {
+#       border: 1px;
+#       border-style: dashed;
+#       border-color: #DFE3E3;
+#   }
+#  
+#   .share img {
+#       opacity: .4;
+#       -moz-opacity: .4;
+#       filter: alpha(opacity=40);
+#   }
+#  
+#   .share img:hover {
+#       opacity: 1;
+#       -moz-opacity: 1;
+#       filter: alpha(opacity=100);
+#   }
+#   </style>"
+# End:
