@@ -24,5 +24,9 @@ handlers:
   static_files: site-manifest.txt
   upload: site-manifest.txt
 
+- url: /favicon.ico
+  static_files: images/favicon.ico
+  upload: images/favicon.ico
+
 - url: /.*
   script: ftk.py
