@@ -4,8 +4,9 @@ runtime: python
 api_version: 1
 
 handlers:
-- url: /workers
-  static_dir: workers/
+- url: /workers/loader.worker.js
+  static_files: workers/loader.worker.js
+  upload: workers/loader.worker.js
   mime_type: application/x-gears-worker
 
 - url: /scripts
