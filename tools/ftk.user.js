@@ -2,6 +2,8 @@
 // @name          FTK
 // @namespace     http://foundation-toolkit.appspot.com
 // @description   Foundation Toolkit
+// @require       jquery-1.3.min.js
+// @require       jquery.purr.js
 // @include       http://fondationjeu.com/*
 // @include       http://www.fondationjeu.com/*
 // ==/UserScript==
@@ -17,8 +19,8 @@ var utils;
 var Constants;
 
 const realWindow = ( typeof(unsafeWindow) == "undefined" ) ? window : unsafeWindow;
-const ftkApp = "http://foundation-toolkit.appspot.com/";
-//const ftkApp = "http://localhost:8080";
+//const ftkApp = "http://foundation-toolkit.appspot.com/";
+const ftkApp = "http://localhost:8080";
 
 function WorkerPoolManager() {
     this.callbacks = new Array();
