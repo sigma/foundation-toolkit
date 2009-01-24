@@ -19,8 +19,8 @@ var utils;
 var Constants;
 
 const realWindow = ( typeof(unsafeWindow) == "undefined" ) ? window : unsafeWindow;
-//const ftkApp = "http://foundation-toolkit.appspot.com/";
-const ftkApp = "http://localhost:8080";
+const ftkApp = "http://foundation-toolkit.appspot.com/";
+//const ftkApp = "http://localhost:8080";
 
 function WorkerPoolManager() {
     this.callbacks = new Array();
