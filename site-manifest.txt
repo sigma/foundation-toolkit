@@ -1,7 +1,7 @@
 // site-manifest.txt
 {
   "betaManifestVersion": 1,
-  "version": "11",
+  "version": "12",
   "entries": [
     { "url": "scripts/gears_init.js" },
 
