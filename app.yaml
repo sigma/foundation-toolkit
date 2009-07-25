@@ -20,6 +20,9 @@ handlers:
 - url: /html
   static_dir: html/
 
+- url: /css
+  static_dir: css/
+
 - url: /site-manifest.txt
   static_files: site-manifest.txt
   upload: site-manifest.txt
@@ -29,4 +32,4 @@ handlers:
   upload: images/favicon.ico
 
 - url: /.*
-  script: ftk.py
+  script: main.py

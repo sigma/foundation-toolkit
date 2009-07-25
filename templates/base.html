@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en" dir="ltr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+      {% if title %}
+      {{ title }}
+      {% endif %}
+    </title>
+    <meta name="robots" content="index,follow" />
+    {% if css_sheets %}
+    {% for css in css_sheets %}
+    <link rel="stylesheet" media="all" type="text/css" href="{{ css }}" />
+    {% endfor %}
+    {% endif %}
+    {% if js_files %}
+    {% for f in js_files %}
+    <script type="text/javascript" src="{{ f }}"></script>
+    {% endfor %}
+    {% endif %}
+    {% if js_blocks %}
+    {% for b in js_blocks %}
+    <script type="text/javascript">{{ b|safe }}</script>
+    {% endfor %}
+    {% endif %}
+  </head>
+
+  <body>
+    <div id="wrapper">
+      <div class="dokuwiki">
+        <div class="stylehead">
+          {% block head %}
+
+          {% endblock %}
+        </div>
+        <div class="bar" id="bar__top">
+          {% block topbar %}
+
+          {% endblock %}
+        </div>
+        <div class="left_sidebar">
+          {% block sidebar %}
+
+          {% endblock %}
+        </div>
+        <div class="right_page">
+          {% block page %}
+
+          {% endblock %}
+        </div>
+        <div class="bar" id="bar__bottom">
+          {% block bottombar %}
+
+          {% endblock %}
+        </div>
+        <div class="clearer"></div>
+        <div align="center" class="footerinc">
+          {% block footer %}
+
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

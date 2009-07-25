@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block head %}
+<div class="header">
+  <div class="pagename">
+    [[<a href="/" >Foundation ToolKit</a>]]
+  </div>
+  <div class="logo">
+    <a href="/">A Foundation Game Helper</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block topbar %}
+<div class="bar-right">
+{% if user %}
+Logged in as {{ user }}
+{% endif %}
+  <a href="{{ log_url }}">{{ log_txt }}</a>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<h1><a name="sb_left_site_map" id="sb_left_site_map">Site Map</a></h1>
+<div class="level1">
+  <ul>
+    <li class="level1"><div class="li"> <a href="/" class="wikilink1" title="portal">Portal</a></div></li>
+    <li class="level1"><div class="li"> <a href="/webapp" class="wikilink1" title="webapp">WebApp</a></div></li>
+    </li>
+  </ul>
+</div>
+{% endblock %}
+
+{% block page %}
+{{ text|safe }}
+{% endblock %}
