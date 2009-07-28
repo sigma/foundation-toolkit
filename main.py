@@ -25,6 +25,12 @@ import os
 import sys
 import logging
 
+try:
+  from google.appengine.dist import use_library
+  use_library('django', '1.0')
+except:
+  pass
+
 from appengine_django import InstallAppengineHelperForDjango
 from appengine_django import have_django_zip
 from appengine_django import django_zip_path

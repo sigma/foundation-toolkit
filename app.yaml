@@ -1,5 +1,5 @@
 application: foundation-toolkit
-version: 0-0-5a
+version: 0-1-0
 runtime: python
 api_version: 1
 
@@ -22,6 +22,9 @@ handlers:
 
 - url: /css
   static_dir: css/
+
+- url: /images
+  static_dir: images/
 
 - url: /site-manifest.txt
   static_files: site-manifest.txt

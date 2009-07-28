@@ -1,7 +1,7 @@
 // site-manifest.txt
 {
   "betaManifestVersion": 1,
-  "version": "14",
+  "version": "22",
   "entries": [
     { "url": "scripts/gears_init.js" },
 
@@ -9,6 +9,7 @@
     { "url": "workers/loader.js" },
 
     { "url": "lib/root.js" },
+    { "url": "lib/database_init.js" },
 
     { "url": "lib/detail.js" },
     { "url": "lib/leader.js" },
@@ -16,6 +17,11 @@
     { "url": "lib/menu.js" },
     { "url": "lib/messages.js" },
     { "url": "lib/stats.js" },
-    { "url": "lib/test.js" }
+    { "url": "lib/test.js" },
+
+    { "url": "images/info.png" },
+    { "url": "images/purrClose.png" },
+    { "url": "images/purrTop.png" },
+    { "url": "images/purrBottom.png" }
   ]
 }

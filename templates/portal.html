@@ -32,5 +32,9 @@ Logged in as {{ user }}
 {% endblock %}
 
 {% block page %}
-{{ text|safe }}
+{% autoescape off %}
+<div class="noteclassic">
+  {{ text }}
+</div>
+{% endautoescape %}
 {% endblock %}

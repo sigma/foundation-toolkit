@@ -19,8 +19,10 @@ var utils;
 var Constants;
 
 const realWindow = ( typeof(unsafeWindow) == "undefined" ) ? window : unsafeWindow;
-const ftkApp = "http://foundation-toolkit.appspot.com/";
-//const ftkApp = "http://localhost:8080";
+// const ftkApp = "http://foundation-toolkit.appspot.com/";
+// const ftkApp = "http://0-1-0.latest.foundation-toolkit.appspot.com/";
+const ftkApp = "http://localhost:8000";
+// const ftkApp = "http://localhost:8080";
 
 function WorkerPoolManager() {
     this.callbacks = new Array();
@@ -39,9 +41,18 @@ function WorkerPoolManager() {
         workerPool.sendMessage(message, this.ids[id]);
     };
 
-    this.loadLib = function(lib) {
-        this.addWorker("loader", function(message) {eval(message.body);});
+    this.loadLib = function(lib, cb) {
+        this.addWorker("loader", this.evalCallback(cb));
         this.runWorker("loader", "/lib/" + lib + ".js");
+    };
+
+    this.evalCallback = function(cb) {
+        return function(message) {
+            eval(message.body);
+            if (cb) {
+                cb();
+            }
+        };
     };
 
 }
@@ -68,16 +79,14 @@ function initGears() {
         server = unsafeWindow.google.gears.factory.create("beta.localserver");
         store = server.createStore("fondation_offline");
         workerPool = unsafeWindow.google.gears.factory.create("beta.workerpool");
+        db = unsafeWindow.google.gears.factory.create("beta.database");
+        request = unsafeWindow.google.gears.factory.create("beta.httprequest");
+
         wpMgr = new WorkerPoolManager();
         wpMgr.rootUrl = ftkApp + "/workers/";
-
         workerPool.onmessage = function(a, b, message) {
             wpMgr.callbacks[message.sender](message);
         };
-
-        db = unsafeWindow.google.gears.factory.create("beta.database");
-
-        request = unsafeWindow.google.gears.factory.create("beta.httprequest");
 
     } catch(e) {}
     if (!server){
