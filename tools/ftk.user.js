@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          FTK
-// @namespace     http://foundation-toolkit.appspot.com
-// @description   Foundation Toolkit
+// @namespace     http://fondation-toolkit.appspot.com
+// @description   Fondation Toolkit
 // @require       jquery-1.3.min.js
 // @require       jquery.purr.js
 // @include       http://fondationjeu.com/*
@@ -19,10 +19,9 @@ var utils;
 var Constants;
 
 const realWindow = ( typeof(unsafeWindow) == "undefined" ) ? window : unsafeWindow;
-// const ftkApp = "http://foundation-toolkit.appspot.com/";
-// const ftkApp = "http://0-1-0.latest.foundation-toolkit.appspot.com/";
-const ftkApp = "http://localhost:8000";
-// const ftkApp = "http://localhost:8080";
+
+const ftkApp = "http://foundation-toolkit.appspot.com/";
+// const ftkApp = "http://localhost:8000";
 
 function WorkerPoolManager() {
     this.callbacks = new Array();

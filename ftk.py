@@ -19,9 +19,9 @@ class MainPage(webapp.RequestHandler):
       url_linktext = 'Login'
 
     template_values = {
-      'title': "Fondation-hacks",
+      'title': "Fondation Toolkit",
       'text': """
-Index page for fondation-hacks. There is little to see here, only serves as installation point.
+Index page for fondation-toolkit. There is little to see here, only serves as installation point.
 
 <a href="/tools/ftk.user.js">Greasemonkey user script</a>
 """,
