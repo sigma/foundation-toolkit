@@ -1,11 +1,12 @@
 // site-manifest.txt
 {
   "betaManifestVersion": 1,
-  "version": "11",
+  "version": "14",
   "entries": [
     { "url": "scripts/gears_init.js" },
 
-    { "url": "workers/loader.worker.js" },
+    { "url": "workers/test.js" },
+    { "url": "workers/loader.js" },
 
     { "url": "lib/root.js" },
 
@@ -14,6 +15,7 @@
     { "url": "lib/map.js" },
     { "url": "lib/menu.js" },
     { "url": "lib/messages.js" },
-    { "url": "lib/stats.js" }
+    { "url": "lib/stats.js" },
+    { "url": "lib/test.js" }
   ]
 }
